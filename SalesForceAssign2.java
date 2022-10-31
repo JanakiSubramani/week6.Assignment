@@ -53,7 +53,7 @@ public class SalesForceAssign2 {
 		driver.findElement(By.xpath("//button[@title='Close error dialog']//lightning-primitive-icon[1]")).click();
 		
 		//completing the name and stage after handling alert
-		driver.findElement(By.xpath("//label[text()='Opportunity Name']/following::input[1]")).sendKeys("Salesforce Automation by Divya",Keys.ENTER);
+		driver.findElement(By.xpath("//label[text()='Opportunity Name']/following::input[1]")).sendKeys("Salesforce Automation by Janaki",Keys.ENTER);
 		
 		Thread.sleep(3000);
 		//Select 'Stage' as Need Analysis
