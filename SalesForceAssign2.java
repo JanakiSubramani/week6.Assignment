@@ -12,57 +12,84 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class SalesForceAssign2 {
 
-	public static void main(String[] args) throws InterruptedException {
+		public static void main(String[] args) throws InterruptedException {
+		// Set up the driver
 		WebDriverManager.chromedriver().setup();
-		//disable notifications
+
+		// dissable the notifications in the browser
+		// create an object for the class ChromeOptions
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments("disable-notifications");
+
+		// use that object and use the method(addArguments)
+		// In that method pass the arguments("disable-notification")
+		options.addArguments("disable-notification");
+
+		// pass the object in the constructor of ChromeDriver class
 		ChromeDriver driver = new ChromeDriver(options);
-		driver.manage().window().maximize();
-		
-		//1.Launch Salesforce application
+
+		// Lanuch the url
 		driver.get("https://login.salesforce.com");
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
-		//2. Login with valid credentials username and password 
+		// Maximize the window
+		driver.manage().window().maximize();
+		// Give the implicit wait
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
+
+		// enter the username and password
 		driver.findElement(By.id("username")).sendKeys("ramkumar.ramaiah@testleaf.com");
 		driver.findElement(By.id("password")).sendKeys("Password#123");
+
+		// Click the login button
 		driver.findElement(By.id("Login")).click();
-		
-		//3. Click on toggle menu button from the left corner
+
+		// Click the App Launcher
 		driver.findElement(By.xpath("//div[@class='slds-icon-waffle']")).click();
-		
-		// Click view All and click Sales from App Launcher
-		driver.findElement(By.xpath("//lightning-button[@class='slds-button slds-p-horizontal--small']/button")).click();
+
+		// Click the view all button
+		driver.findElement(By.xpath("//button[text()='View All']")).click();
+
+		// click the Sales
 		driver.findElement(By.xpath("//p[text()='Sales']")).click();
-		
-		//4. Click on Opportunity tab 
-		WebElement opportunity = driver.findElement(By.xpath("//a[@title='Opportunities']"));
-		driver.executeScript("arguments[0].click();", opportunity);
-		
-		//5. Click on New button
-		driver.findElement(By.xpath("//div[text()='New']")).click();
-		
-		//6. Choose Close date as Tomorrow Date
-		driver.findElement(By.xpath("//label[text()='Close Date']/following::div/input")).sendKeys("10/31/2022",Keys.ENTER);
-		
-		//7. Click on save 
-		driver.findElement(By.xpath("//button[@class='slds-button slds-button_brand']")).click();
 
-		Thread.sleep(3000);
-		//8. Verify the Alert message (Complete this field) displayed for Name and Stage"
-		driver.findElement(By.xpath("//button[@title='Close error dialog']//lightning-primitive-icon[1]")).click();
-		
-		//completing the name and stage after handling alert
-		driver.findElement(By.xpath("//label[text()='Opportunity Name']/following::input[1]")).sendKeys("Salesforce Automation by Janaki",Keys.ENTER);
-		
-		Thread.sleep(3000);
-		//Select 'Stage' as Need Analysis
-		driver.findElement(By.xpath("//button[@data-value='--None--']")).click();
-		driver.findElement(By.xpath("//lightning-base-combobox-item[@data-value='Needs Analysis']")).click();
-		
-		//9. Click on save 
-	driver.findElement(By.xpath("//button[@class='slds-button slds-button_brand']")).click();
-	
+		// Click on Opportunity tab
+		WebElement opportunities = driver.findElement(
+				By.xpath("//a[@class='slds-context-bar__label-action dndItem']//span[text()='Opportunities']"));
+		driver.executeScript("arguments[0].click()", opportunities);
+
+		// Click the new button
+		driver.findElement(By.xpath("//div[@title='New']")).click();
+
+		// Enter Opportunity name as 'Salesforce Automation by Janaki
+		WebElement opportunityName = driver.findElement(By.xpath("//input[@name='Name']"));
+		// send the Opportunity name by uisng sendKeys method
+		opportunityName.click();
+
+		// Choose close date as Today
+		WebElement todayDate = driver.findElement(By.xpath("//input[@name='CloseDate']"));
+		todayDate.click();
+		todayDate.sendKeys("11/01/2022");
+
+		// Select 'Stage' as Need Analysis
+		WebElement none = driver.findElement(By.xpath("//button[@data-value='--None--']"));
+		Actions builder = new Actions(driver);
+		builder.moveToElement(none).click().perform();
+
+		// click Save
+		driver.findElement(By.xpath("//button[@name='SaveEdit']")).click();
+
+		driver.findElement(By.xpath("//a[text()='Opportunity Name']")).click();
+
+		String errorMsg = driver
+				.findElement(By.xpath("//div[@class='slds-form-element__control slds-grow']/following-sibling::div[1]"))
+				.getText();
+		System.out.println("The  error message for opportunityName and Stage  is : " + errorMsg);
+
+		// Verify the opportunityName and Stage
+		if (errorMsg.contains("Complete this field.")) {
+			System.out.println("Alert error message  for opportunityName and Stage is verified successfully");
+
+		} else {
+			System.out.println("Alert error message  opportunityName and Stage  is not verified successfully");
+
+		}
+
 	}
-
-}
